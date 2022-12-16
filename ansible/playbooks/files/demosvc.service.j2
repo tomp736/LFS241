@@ -1,0 +1,13 @@
+[Unit]
+Description=Prometheus Demo Service
+Documentation=https://github.com/juliusv/prometheus_demo_service
+After=network.target
+
+[Service]
+User=demosvc
+Group=demosvc
+Type=simple
+ExecStart={{ demosvc_path }} -listen-address=:{{ demosvc_listen_address }}
+
+[Install]
+WantedBy=multi-user.target

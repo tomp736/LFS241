@@ -1,0 +1,60 @@
+- name: Install Prometheus Demo Service
+  hosts: labsys
+  remote_user: sysadmin
+  become: yes
+  
+  vars:
+    version: "0.10.0"
+    distro: "linux-amd64"
+    instances:
+    - 10000
+    - 10001
+    - 10002
+
+  tasks:
+  
+  # Step 1 - Download and Copy Binaries
+  - name: Create User and Directories
+    block:
+
+    - name: Create User
+      user:
+        name: demosvc
+        shell: /sbin/nologin
+
+  # Step 2 - Download and Copy Binaries
+  - name: Download and Copy Binaries
+    block:
+
+    - name: Download Prometheus Demo Service
+      get_url:
+        url: "https://github.com/juliusv/prometheus_demo_service/releases/download/{{ version }}/prometheus_demo_service-{{ version }}.{{ distro }}"
+        dest: /usr/local/bin/demosvc
+        owner: demosvc
+        group: demosvc
+        mode: 755
+  
+  # Step 3 - Create Unit, Copy Config, and Enable
+  - name: Create Unit and Enable
+    block:
+
+    - name: Create demosvc unit file
+      template:
+        src: files/demosvc.service.j2
+        dest: /etc/systemd/system/demosvc.{{ item }}.service
+        owner: root
+        group: root
+        mode: 0644
+      vars:
+        demosvc_path: "/usr/local/bin/demosvc"
+        demosvc_listen_address: "{{ item }}"
+      loop: "{{ instances }}"
+
+    - name: Enable and start demosvc service
+      systemd:
+        name: "demosvc.{{ item }}"
+        state: started
+        enabled: yes
+      loop: "{{ instances }}"
+
+  

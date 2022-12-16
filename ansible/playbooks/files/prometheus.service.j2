@@ -1,0 +1,17 @@
+[Unit]
+Description=Prometheus Monitoring Server
+Documentation=https://prometheus.io/docs/introduction/overview/
+After=network.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+ExecStart={{ prometheus_path }} \
+    --config.file={{ config_path }} \
+    --storage.tsdb.path={{ storage_path }} \
+    --web.console.templates={{ consoles_path }} \
+    --web.console.libraries={{ libraries_path }}
+
+[Install]
+WantedBy=multi-user.target

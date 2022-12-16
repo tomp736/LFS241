@@ -1,0 +1,68 @@
+{
+    "networks": [
+        {
+            "id": "net0",
+            "name": "net0",
+            "ip_range": "10.98.0.0/16",
+            "subnet_ranges": [
+                "10.98.0.0/24"
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "id": "labsys",
+            "state": "enabled",
+            "networks": [
+                { 
+                    "id" : "net0",
+                    "ip" : ""
+                }
+            ],
+            "name": "labsys",
+            "location": "nbg1",
+            "image": "ubuntu-22.04",
+            "server_type": "cx21",
+            "nodetype": "generic",
+            "network_zone": "eu-central",
+            "ssh_user": "sysadmin",
+            "ssh_port": "2222"
+        },
+        {
+            "id": "labsys-docker",
+            "state": "disabled",
+            "networks": [
+                { 
+                    "id" : "net0",
+                    "ip" : ""
+                }
+            ],
+            "name": "labsys-docker",
+            "location": "nbg1",
+            "image": "ubuntu-22.04",
+            "server_type": "cx21",
+            "nodetype": "generic",
+            "network_zone": "eu-central",
+            "ssh_user": "sysadmin",
+            "ssh_port": "2222"
+        },
+        {
+            "id": "labsys-kubernetes",
+            "state": "disabled",
+            "networks": [
+                { 
+                    "id" : "net0",
+                    "ip" : ""
+                }
+            ],
+            "name": "labsys-kubernetes",
+            "location": "nbg1",
+            "image": "ubuntu-22.04",
+            "server_type": "cx21",
+            "nodetype": "generic",
+            "network_zone": "eu-central",
+            "ssh_user": "sysadmin",
+            "ssh_port": "2222"
+        }
+    ]
+}
