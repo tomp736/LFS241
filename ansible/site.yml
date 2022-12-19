@@ -1,10 +1,12 @@
 ---
 # file: site.yml
 
-- import_playbook: playbooks/prometheus_service.yml
-- import_playbook: playbooks/prometheus_demo_service.yml
-
 - import_playbook: playbooks/docker.yml
+- import_playbook: playbooks/docker_prometheus.yml
 - import_playbook: playbooks/docker_grafana.yml
+- import_playbook: playbooks/docker_demosvc.yml
+- import_playbook: playbooks/docker_node_exporter.yml
 
-- import_playbook: playbooks/node_exporter_service.yml
+# - import_playbook: playbooks/systemd_prometheus.yml
+# - import_playbook: playbooks/systemd_demosvc.yml
+# - import_playbook: playbooks/systemd_node_exporter.yml

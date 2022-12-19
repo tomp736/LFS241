@@ -1,0 +1,47 @@
+- name: Install DemoSvc Container
+  hosts: labsys
+  remote_user: sysadmin
+  become: yes
+
+  vars:
+    version: "0.10.0"
+    distro: "linux-amd64"
+    instances:
+    - 10000
+    - 10001
+    - 10002
+
+  tasks:
+  - name: Create User
+    user:
+      name: demosvc
+      shell: /sbin/nologin
+
+  - name: Download Prometheus Demo Service
+    get_url:
+      url: "https://github.com/juliusv/prometheus_demo_service/releases/download/{{ version }}/prometheus_demo_service-{{ version }}.{{ distro }}"
+      dest: /usr/local/bin/demosvc
+      owner: demosvc
+      group: demosvc
+      mode: 755
+
+  - name: Create DemoSvc Container
+    community.docker.docker_container:
+      name: demosvc-{{ item }}
+      state: started
+      image: ubuntu:22.04
+      restart_policy: always
+      ports:
+        - '{{ item }}:{{ item }}'
+      volumes:
+        - '/usr/local/bin/demosvc:/usr/local/bin/demosvc:ro'
+      command: /usr/local/bin/demosvc -listen-address=:{{ item }}
+    loop: "{{ instances }}"
+
+  - name: Add to promnet
+    community.docker.docker_network:
+      name: promnet
+      connected:
+        - demosvc-{{ item }}
+      appends: true
+    loop: "{{ instances }}"
