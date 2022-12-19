@@ -5,7 +5,8 @@ global:
 scrape_configs:
   - job_name: prometheus
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: 
+        - 'localhost:9090'
 
   - job_name: 'demo'
     static_configs: 
@@ -13,3 +14,8 @@ scrape_configs:
       - 'localhost:10000'
       - 'localhost:10001'
       - 'localhost:10002'
+
+  - job_name: 'node'
+    static_configs:
+    - targets:
+      - 'localhost:9100'
