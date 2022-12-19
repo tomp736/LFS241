@@ -13,7 +13,7 @@
 
   tasks:
   
-  # Step 1 - Download and Copy Binaries
+  # Step 1 - Create User
   - name: Create User and Directories
     block:
 

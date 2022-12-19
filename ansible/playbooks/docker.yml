@@ -1,0 +1,10 @@
+- name: Install and configure DockerCE
+  hosts: labsys
+  remote_user: sysadmin
+  become: yes
+
+  tasks: 
+
+    - name: Install DockerCE
+      ansible.builtin.import_role:
+        name: labrats_work.modules_ansible.docker
