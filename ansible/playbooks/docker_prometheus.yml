@@ -1,9 +1,15 @@
 - name: Install Prometheus Container
   hosts: labsys
   remote_user: sysadmin
-  become: yes
+  become: true
 
   tasks:
+  
+  - name: Create User
+    user:
+      name: prometheus
+      shell: /sbin/nologin
+
   - name: Create directory if it does not exist
     ansible.builtin.file:
       path: "{{ item }}"

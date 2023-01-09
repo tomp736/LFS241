@@ -1,7 +1,7 @@
 - name: Install and configure DockerCE
   hosts: labsys
   remote_user: sysadmin
-  become: yes
+  become: true
 
   tasks: 
 
@@ -9,6 +9,6 @@
       ansible.builtin.import_role:
         name: labrats_work.modules_ansible.docker
 
-    - name: Create a network
+    - name: Create promnet
       community.docker.docker_network:
         name: promnet

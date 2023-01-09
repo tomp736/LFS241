@@ -6,6 +6,7 @@
 - import_playbook: playbooks/docker_grafana.yml
 - import_playbook: playbooks/docker_demosvc.yml
 - import_playbook: playbooks/docker_node_exporter.yml
+- import_playbook: playbooks/docker_mediaplayer.yml
 
 # - import_playbook: playbooks/systemd_prometheus.yml
 # - import_playbook: playbooks/systemd_demosvc.yml

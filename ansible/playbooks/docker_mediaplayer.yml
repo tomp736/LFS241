@@ -1,0 +1,94 @@
+- name: Install MediaPlayer Containers
+  hosts: labsys
+  remote_user: sysadmin
+  become: true
+
+  tasks:
+  - name: Create User
+    user:
+      name: mediaplayer
+      shell: /sbin/nologin
+
+  - name: Create media directories
+    ansible.builtin.file:
+      path: "{{ item }}"
+      owner: sysadmin
+      group: docker
+      state: directory
+      mode: 0750
+    loop:
+    - /srv/media/videos
+    - /srv/media/thumbs
+   
+  - name: Create medianet
+    community.docker.docker_network:
+      name: medianet 
+
+  - name: Create MediaPlayer Container
+    community.docker.docker_container:
+      name: mediaplayer
+      state: started
+      image: ghcr.io/tomp736/mediaplayer/mediaplayer
+      restart_policy: always
+      ports:
+        - "8880:80"
+      env:
+        PYTHONHASHSEED: "383747829"
+        FLASK_RUN_PORT: "80"
+
+  - name: Create Thumbnail Service
+    community.docker.docker_container:
+      name: httpthumb
+      state: started
+      image: ghcr.io/tomp736/images/python_httpthumb
+      env:
+        PYTHONHASHSEED: "383747829"
+        FLASK_RUN_PORT: "80"
+      volumes:
+        - /srv/media/videos:/app/videos
+        - /srv/media/thumbs:/app/thumbs
+      restart_policy: always
+
+  - name: Create VideoLib Service
+    community.docker.docker_container:
+      name: httpvideo
+      state: started
+      image: ghcr.io/tomp736/images/python_httpvideo
+      env:
+        PYTHONHASHSEED: "383747829"
+        FLASK_RUN_PORT: "80"
+      volumes:
+        - /srv/media/videos:/app/videos
+      restart_policy: always
+
+  - name: Create File Service
+    community.docker.docker_container:
+      name: httpfile
+      state: started
+      image: ghcr.io/tomp736/images/python_httpfile
+      ports:
+        - "8881:80"
+      env:
+        PYTHONHASHSEED: "383747829"
+        FLASK_RUN_PORT: "80"
+      volumes:
+        - /srv/media/videos:/files
+      restart_policy: unless-stopped
+
+  - name: Add to medianet
+    community.docker.docker_network:
+      name: medianet
+      connected:
+        - mediaplayer
+        - httpvideo
+        - httpthumb
+      appends: true
+
+  - name: Add to promnet
+    community.docker.docker_network:
+      name: promnet
+      connected:
+        - mediaplayer
+        - httpvideo
+        - httpthumb
+      appends: true
